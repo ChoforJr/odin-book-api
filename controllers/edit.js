@@ -3,18 +3,14 @@ import {
   updatePassword,
   updateDisplayName,
   updateBio,
-  updateGroupInfo,
-  updateGroupAdmin,
-  joinGroup,
-  leaveGroup,
-  adminRemoveMember,
-  adminAddMember,
   addConnect,
   removeConnect,
+  changeProfilePhoto,
 } from "../prisma_queries/update.js";
-import { findGroupByID, findProfileByUserID } from "../prisma_queries/find.js";
+import { findProfileByUserID } from "../prisma_queries/find.js";
 import { matchedData } from "express-validator";
 import { hash } from "bcryptjs";
+import { v2 as cloudinary } from "cloudinary";
 
 export async function editUserName(req, res, next) {
   try {
@@ -74,125 +70,6 @@ export async function editBio(req, res, next) {
   }
 }
 
-export async function editGroupName(req, res, next) {
-  try {
-    const { name } = matchedData(req);
-    const group = await findGroupByID(Number(req.params.groupId));
-    if (!group) {
-      return res.status(404).json("Group Not found.");
-    }
-    if (group.adminId !== req.user.profileID) {
-      return res.status(404).json("You are not authorized to do this.");
-    }
-    await updateGroupInfo(Number(req.params.groupId), "name", name);
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupDescription(req, res, next) {
-  try {
-    const { description } = matchedData(req);
-    const group = await findGroupByID(Number(req.params.groupId));
-    if (!group) {
-      return res.status(404).json("Group Not found.");
-    }
-    if (group.adminId !== req.user.profileID) {
-      return res.status(404).json("You are not authorized to do this.");
-    }
-    await updateGroupInfo(
-      Number(req.params.groupId),
-      "description",
-      description,
-    );
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupAdmin(req, res, next) {
-  try {
-    const { newAdminID } = matchedData(req);
-    const group = await findGroupByID(Number(req.params.groupId));
-    if (!group) {
-      return res.status(404).json("Group Not found.");
-    }
-    if (group.adminId !== req.user.profileID) {
-      return res.status(404).json("You are not authorized to do this.");
-    }
-    await updateGroupAdmin(Number(req.params.groupId), Number(newAdminID));
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupJoin(req, res, next) {
-  try {
-    await joinGroup(Number(req.params.groupId), Number(req.user.profileID));
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupLeave(req, res, next) {
-  try {
-    await leaveGroup(Number(req.params.groupId), Number(req.user.profileID));
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupDropMember(req, res, next) {
-  try {
-    const group = await adminRemoveMember(
-      Number(req.params.groupID),
-      req.user.profileID,
-      Number(req.params.userID),
-    );
-    if (group === undefined) {
-      return res.status(200).json("Done");
-    }
-    if (group === null) {
-      return res.status(200).json("Group Not found");
-    }
-    if (group === "Not Admin") {
-      return res
-        .status(404)
-        .json("You are not authorized to remove members from this Group");
-    }
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editGroupAddMember(req, res, next) {
-  try {
-    const group = await adminAddMember(
-      Number(req.params.groupID),
-      req.user.profileID,
-      Number(req.params.userID),
-    );
-    if (group === null) {
-      return res.status(200).json("Group Not found");
-    }
-    if (group === undefined) {
-      return res.status(200).json("Done");
-    }
-    if (group === "Not Admin") {
-      return res
-        .status(404)
-        .json("You are not authorized to add members from this Group");
-    }
-  } catch (err) {
-    return next(err);
-  }
-}
-
 export async function editConnect(req, res, next) {
   try {
     const { contactId } = matchedData(req);
@@ -207,6 +84,37 @@ export async function editDisconnect(req, res, next) {
   try {
     const { contactId } = matchedData(req);
     await removeConnect(Number(req.user.profileID), Number(contactId));
+    res.sendStatus(200);
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function editProfilePhoto(req, res, next) {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return next(new Error("File upload failed, no files object found."));
+    }
+    const checkGuest = await findProfileByUserID(req.user.id);
+    if (checkGuest.type === "guest") {
+      return res.status(404).json("Guests Profile Photo cannot be changed");
+    }
+    const data = [];
+    req.files.forEach((file) => {
+      data.push({
+        originalName: file.originalname,
+        fileName: file.filename,
+        mimeType: file.mimetype,
+        size: file.size,
+        url: file.path,
+        ProfileId: Number(req.user.profileID),
+      });
+    });
+    const oldFile = await changeProfilePhoto(Number(req.user.profileID), data);
+    if (!oldFile) {
+      return res.sendStatus(200);
+    }
+    await cloudinary.uploader.destroy(oldFile.fileName);
     res.sendStatus(200);
   } catch (err) {
     return next(err);

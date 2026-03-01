@@ -44,114 +44,6 @@ export async function updatePassword(userId, newPassword) {
   });
 }
 
-export async function updateGroupInfo(groupId, column, colContent) {
-  await prisma.group.update({
-    where: {
-      id: groupId,
-    },
-    data: {
-      [column]: colContent,
-    },
-  });
-}
-
-export async function updateGroupAdmin(groupId, newAdminID) {
-  await prisma.group.update({
-    where: {
-      id: groupId,
-    },
-    data: {
-      admin: {
-        connect: { id: newAdminID },
-      },
-    },
-  });
-}
-
-export async function joinGroup(groupId, profileID) {
-  await prisma.group.update({
-    where: {
-      id: groupId,
-    },
-    data: {
-      members: {
-        connect: { id: profileID },
-      },
-    },
-  });
-}
-
-export async function leaveGroup(groupId, profileID) {
-  await prisma.group.update({
-    where: {
-      id: groupId,
-    },
-    data: {
-      members: {
-        disconnect: { id: profileID },
-      },
-    },
-  });
-}
-
-export async function adminRemoveMember(groupId, adminID, userId) {
-  return await prisma.$transaction(async (tx) => {
-    const group1 = await tx.group.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-
-    if (!group1) {
-      return null;
-    }
-
-    if (group1.adminId !== adminID) {
-      return "Not Admin";
-    }
-
-    await tx.group.update({
-      where: {
-        id: groupId,
-      },
-      data: {
-        members: {
-          disconnect: { id: userId },
-        },
-      },
-    });
-  });
-}
-
-export async function adminAddMember(groupId, adminID, userId) {
-  return await prisma.$transaction(async (tx) => {
-    const group1 = await tx.group.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-
-    if (!group1) {
-      return null;
-    }
-
-    if (group1.adminId !== adminID) {
-      return "Not Admin";
-    }
-
-    await tx.group.update({
-      where: {
-        id: groupId,
-      },
-      data: {
-        members: {
-          connect: { id: userId },
-        },
-      },
-    });
-  });
-}
-
 export async function addConnect(profileID, contactId) {
   await prisma.profile.update({
     where: {
@@ -181,5 +73,34 @@ export async function removeConnect(profileID, contactId) {
         disconnect: { id: contactId },
       },
     },
+  });
+}
+
+export async function changeProfilePhoto(profileID, data) {
+  return await prisma.$transaction(async (tx) => {
+    const oldFile = await tx.files.findUnique({
+      where: { ProfileId: profileID },
+    });
+
+    if (!oldFile) {
+      await tx.files.createMany({
+        data,
+        skipDuplicates: true,
+      });
+      return null;
+    }
+
+    await tx.files.delete({
+      where: {
+        id: oldFile.id,
+      },
+    });
+
+    await tx.files.createMany({
+      data,
+      skipDuplicates: true,
+    });
+
+    return oldFile;
   });
 }

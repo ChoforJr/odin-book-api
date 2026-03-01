@@ -1,8 +1,6 @@
 import { Router } from "express";
-import { addImageOnlyMessage } from "../controllers/add.js";
 import multer from "multer";
-import { addProfilePhoto, addGroupPhoto } from "../controllers/add.js";
-import { removeProfilePhoto, removeGroupPhoto } from "../controllers/remove.js";
+import { editProfilePhoto } from "../controllers/edit.js";
 import { cloudStorage } from "../config/cloudinary.js";
 
 const allowedMimeTypes = ["image/jpeg", "image/png"];
@@ -26,26 +24,10 @@ const uploads = multer({
 
 const fileRouter = Router();
 
-fileRouter.post("/profile/photo", uploads.array("uploads", 1), addProfilePhoto);
-fileRouter.delete("/profile/photo/:fileID", removeProfilePhoto);
-
-fileRouter.post(
-  "/group/photo/:groupId",
+fileRouter.patch(
+  "/profile/photo",
   uploads.array("uploads", 1),
-  addGroupPhoto,
-);
-
-fileRouter.delete("/group/photo/:fileID", removeGroupPhoto);
-
-fileRouter.post(
-  "/chat/toUser/:userID",
-  uploads.array("uploads", 5),
-  addImageOnlyMessage,
-);
-fileRouter.post(
-  "/chat/toGroup/:groupID",
-  uploads.array("uploads", 5),
-  addImageOnlyMessage,
+  editProfilePhoto,
 );
 
 fileRouter.use((err, req, res, next) => {

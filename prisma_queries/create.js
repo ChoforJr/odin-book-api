@@ -45,69 +45,23 @@ export async function createUser(username, password, displayName) {
   });
 }
 
-export async function insertFiles(data) {
-  await prisma.files.createMany({
-    data,
-    skipDuplicates: true,
-  });
-}
-
-export async function createTextOnlyMessage(
-  authorID,
-  content,
-  toUserID,
-  toGroupID,
-) {
-  const message = await prisma.message.create({
+export async function createPost(content, profileID) {
+  const post = await prisma.post.create({
     data: {
       content: content,
-      authorId: authorID,
-      toUserId: toUserID,
-      toGroupId: toGroupID,
+      profileId: profileID,
     },
   });
-  return message;
+  return post;
 }
 
-export async function createGroup(adminID, name, description) {
-  const message = await prisma.group.create({
+export async function createComment(content, profileID, postId) {
+  const comment = await prisma.comment.create({
     data: {
-      name: name,
-      description: description,
-      adminId: adminID,
-      members: {
-        connect: [
-          {
-            id: adminID,
-          },
-        ],
-      },
+      content: content,
+      profileId: profileID,
+      postId: postId,
     },
   });
-  return message;
-}
-
-export async function createImageOnlyMessage(
-  authorID,
-  toUserID,
-  toGroupID,
-  data,
-) {
-  const message = await prisma.message.create({
-    data: {
-      authorId: authorID,
-      toUserId: toUserID,
-      toGroupId: toGroupID,
-      Files: {
-        createMany: {
-          data,
-          skipDuplicates: true,
-        },
-      },
-    },
-    include: {
-      Files: true,
-    },
-  });
-  return message;
+  return comment;
 }

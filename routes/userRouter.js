@@ -9,8 +9,9 @@ import {
   editDisplayName,
   editPassword,
   editBio,
+  editConnect,
+  editDisconnect,
 } from "../controllers/edit.js";
-import { editConnect, editDisconnect } from "../controllers/edit.js";
 import { removeUserSelf } from "../controllers/remove.js";
 import {
   validateUsernameRules,
@@ -65,6 +66,6 @@ userRouter.patch("/self/bio", validateBioRules, checkValidationResult, editBio);
 
 userRouter.delete("/self", removeUserSelf);
 
-userRouter.use("/file", fileRouter);
+userRouter.use("/change", fileRouter);
 
 export default userRouter;
