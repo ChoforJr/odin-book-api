@@ -9,7 +9,7 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 export const cloudStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    asset_folder: "messaging-app",
+    asset_folder: "odin-book",
     allowed_formats: ["jpg", "png", "jpeg"],
   },
 });

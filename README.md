@@ -1,10 +1,10 @@
-# MESSAGING APP API
+# ODIN-BOOK API
 
-This the backend of the messaging app project I build to allow users to communicate with one another
+This the backend of the Odin-Book app project, This project is a social media app
 
-## MESSAGING APP CLIENT GITHUB REPO
+## ODIN-BOOKP CLIENT GITHUB REPO
 
-https://github.com/ChoforJr/messaging-app
+https://github.com/ChoforJr/odin-book
 
 # Author : FORSAKANG CHOFOR JUNIOR
 
@@ -19,3 +19,5 @@ Copy the output and assign it to a secret key of your choice in your .env file
 # command to bypass that error
 
 npm install multer-storage-cloudinary --legacy-peer-deps
+
+npm audit fix --legacy-peer-deps
