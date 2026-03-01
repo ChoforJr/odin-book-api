@@ -62,6 +62,22 @@ export async function findFollowings(userID) {
   return profile;
 }
 
+export async function findFollowers(userID) {
+  const profile = await prisma.profile.findUnique({
+    where: {
+      userId: userID,
+    },
+    select: {
+      followedBy: {
+        include: {
+          photo: true,
+        },
+      },
+    },
+  });
+  return profile;
+}
+
 export async function findFriends(profileID) {
   const profiles = await prisma.profile.findMany({
     where: {

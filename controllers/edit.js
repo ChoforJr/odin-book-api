@@ -3,8 +3,7 @@ import {
   updatePassword,
   updateDisplayName,
   updateBio,
-  addConnect,
-  removeConnect,
+  updateFollowing,
   changeProfilePhoto,
 } from "../prisma_queries/update.js";
 import { findProfileByUserID } from "../prisma_queries/find.js";
@@ -70,20 +69,10 @@ export async function editBio(req, res, next) {
   }
 }
 
-export async function editConnect(req, res, next) {
+export async function editFollowing(req, res, next) {
   try {
     const { contactId } = matchedData(req);
-    await addConnect(Number(req.user.profileID), Number(contactId));
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function editDisconnect(req, res, next) {
-  try {
-    const { contactId } = matchedData(req);
-    await removeConnect(Number(req.user.profileID), Number(contactId));
+    await updateFollowing(Number(req.user.profileID), Number(contactId));
     res.sendStatus(200);
   } catch (err) {
     return next(err);

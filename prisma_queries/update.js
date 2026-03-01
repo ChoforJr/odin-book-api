@@ -44,35 +44,45 @@ export async function updatePassword(userId, newPassword) {
   });
 }
 
-export async function addConnect(profileID, contactId) {
-  await prisma.profile.update({
-    where: {
-      id: profileID,
-    },
-    data: {
-      followedBy: {
-        connect: { id: contactId },
+export async function updateFollowing(profileID, contactId) {
+  return await prisma.$transaction(async (tx) => {
+    const profile = await tx.profile.findUnique({
+      where: {
+        id: profileID,
       },
-      following: {
-        connect: { id: contactId },
+      select: {
+        following: {
+          where: {
+            id: contactId,
+          },
+        },
       },
-    },
-  });
-}
+    });
 
-export async function removeConnect(profileID, contactId) {
-  await prisma.profile.update({
-    where: {
-      id: profileID,
-    },
-    data: {
-      followedBy: {
-        disconnect: { id: contactId },
+    if (profile.following.length > 0) {
+      await tx.profile.update({
+        where: {
+          id: profileID,
+        },
+        data: {
+          following: {
+            disconnect: { id: contactId },
+          },
+        },
+      });
+      return;
+    }
+    await tx.profile.update({
+      where: {
+        id: profileID,
       },
-      following: {
-        disconnect: { id: contactId },
+      data: {
+        following: {
+          connect: { id: contactId },
+        },
       },
-    },
+    });
+    return;
   });
 }
 

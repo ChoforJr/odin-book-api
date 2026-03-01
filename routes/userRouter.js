@@ -2,6 +2,7 @@ import {
   readUserByID,
   readProfiles,
   readFollowings,
+  readFollowers,
   exploreProfiles,
 } from "../controllers/read.js";
 import {
@@ -9,8 +10,7 @@ import {
   editDisplayName,
   editPassword,
   editBio,
-  editConnect,
-  editDisconnect,
+  editFollowing,
 } from "../controllers/edit.js";
 import { removeUserSelf } from "../controllers/remove.js";
 import {
@@ -29,21 +29,15 @@ const userRouter = Router();
 userRouter.get("/self", readUserByID);
 userRouter.get("/profile/all", readProfiles);
 userRouter.get("/profile/followings", readFollowings);
+userRouter.get("/profile/followers", readFollowers);
 userRouter.get("/profile/explore", exploreProfiles);
 
 userRouter.patch(
-  "/profile/connect",
+  "/profile/change/following",
   validateContactIDRules,
   checkValidationResult,
-  editConnect,
+  editFollowing,
 );
-userRouter.patch(
-  "/profile/disconnect",
-  validateContactIDRules,
-  checkValidationResult,
-  editDisconnect,
-);
-
 userRouter.patch(
   "/self/userName",
   validateUsernameRules,

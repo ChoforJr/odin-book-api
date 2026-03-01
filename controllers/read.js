@@ -10,6 +10,7 @@ import {
   findMessagesToGroups,
   findAllNonMemberGroups,
   findFollowings,
+  findFollowers,
   findFriends,
 } from "../prisma_queries/find.js";
 import { matchedData } from "express-validator";
@@ -46,6 +47,15 @@ export async function readFollowings(req, res, next) {
   try {
     const followings = await findFollowings(req.user.id);
     res.json(followings);
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function readFollowers(req, res, next) {
+  try {
+    const followers = await findFollowers(req.user.id);
+    res.json(followers);
   } catch (err) {
     return next(err);
   }
