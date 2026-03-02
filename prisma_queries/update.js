@@ -114,3 +114,45 @@ export async function changeProfilePhoto(profileID, data) {
     return oldFile;
   });
 }
+
+export async function updateLikingPost(profileID, postID) {
+  return await prisma.$transaction(async (tx) => {
+    const profile = await tx.profile.findUnique({
+      where: {
+        id: profileID,
+      },
+      select: {
+        likedPosts: {
+          where: {
+            id: postID,
+          },
+        },
+      },
+    });
+
+    if (profile.likedPosts.length > 0) {
+      await tx.profile.update({
+        where: {
+          id: profileID,
+        },
+        data: {
+          likedPosts: {
+            disconnect: { id: postID },
+          },
+        },
+      });
+      return;
+    }
+    await tx.profile.update({
+      where: {
+        id: profileID,
+      },
+      data: {
+        likedPosts: {
+          connect: { id: postID },
+        },
+      },
+    });
+    return;
+  });
+}

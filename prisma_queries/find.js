@@ -46,6 +46,15 @@ export async function findProfileByUserID(userID) {
   return profile;
 }
 
+export async function findProfileByID(profileID) {
+  const profile = await prisma.profile.findUnique({
+    where: {
+      id: profileID,
+    },
+  });
+  return profile;
+}
+
 export async function findFollowings(userID) {
   const profile = await prisma.profile.findUnique({
     where: {
@@ -57,6 +66,9 @@ export async function findFollowings(userID) {
           photo: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
   return profile;
@@ -73,6 +85,9 @@ export async function findFollowers(userID) {
           photo: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
   return profile;
@@ -95,6 +110,9 @@ export async function findFriends(profileID) {
     include: {
       photo: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return profiles;
 }
@@ -104,121 +122,71 @@ export async function findProfiles() {
     include: {
       photo: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return profiles;
 }
 
-export async function findAllGroups() {
-  const groups = await prisma.group.findMany({
+export async function findUserPosts(profileID) {
+  const posts = await prisma.post.findMany({
+    where: {
+      profileId: profileID,
+    },
     include: {
-      members: true,
-      profilePhoto: true,
+      comments: true,
+      likedBy: {
+        select: {
+          id: true,
+        },
+      },
     },
     orderBy: {
-      id: "asc",
+      createdAt: "desc",
     },
   });
-  return groups;
+  return posts;
 }
 
-export async function findAllMemberGroups(profileID) {
-  const groups = await prisma.group.findMany({
+export async function findCommentedPost(profileID) {
+  const posts = await prisma.post.findMany({
     where: {
-      members: {
+      comments: {
+        some: {
+          profileId: profileID,
+        },
+      },
+    },
+    include: {
+      comments: true,
+      likedBy: {
+        select: {
+          id: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return posts;
+}
+
+export async function findLikedPost(profileID) {
+  const posts = await prisma.post.findMany({
+    where: {
+      likedBy: {
         some: {
           id: profileID,
         },
       },
     },
     include: {
-      members: true,
-      profilePhoto: true,
-    },
-  });
-  return groups;
-}
-
-export async function findAllNonMemberGroups(profileID) {
-  const groups = await prisma.group.findMany({
-    where: {
-      members: {
-        none: {
-          id: profileID,
-        },
-      },
-    },
-    include: {
-      members: true,
-      profilePhoto: true,
-    },
-  });
-  return groups;
-}
-
-export async function findGroupByID(groupID) {
-  const groups = await prisma.group.findUnique({
-    where: {
-      id: groupID,
-    },
-  });
-  return groups;
-}
-
-export async function findMessagesToUser(userID) {
-  const messages = await prisma.message.findMany({
-    where: {
-      OR: [{ authorId: userID }, { toUserId: userID }],
-      toGroupId: null,
-    },
-    include: {
-      Files: {
-        orderBy: {
-          id: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
-  return messages;
-}
-
-export async function findMessagesToGroups(profileID) {
-  const messages = await prisma.message.findMany({
-    where: {
-      toUserId: null,
-      toGroupId: {
-        in: (await findAllMemberGroups(profileID)).map((group) => group.id),
-      },
-    },
-    include: {
-      Files: {
-        orderBy: {
-          id: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
-  return messages;
-}
-
-export async function findRecentMessagesToUser(userID, recentDate) {
-  const messages = await prisma.message.findMany({
-    where: {
-      OR: [{ authorId: userID }, { toUserId: userID }],
-      toGroupId: null,
-      createdAt: {
-        gt: recentDate,
-      },
-    },
-    include: {
-      Files: {
-        orderBy: {
-          id: "desc",
+      comments: true,
+      likedBy: {
+        select: {
+          id: true,
         },
       },
     },
@@ -226,30 +194,14 @@ export async function findRecentMessagesToUser(userID, recentDate) {
       createdAt: "desc",
     },
   });
-  return messages;
+  return posts;
 }
 
-export async function findRecentMessagesToGroups(profileID, recentDate) {
-  const messages = await prisma.message.findMany({
+export async function findPostByID(postID) {
+  const post = await prisma.post.findUnique({
     where: {
-      toUserId: null,
-      toGroupId: {
-        in: (await findAllMemberGroups(profileID)).map((group) => group.id),
-      },
-      createdAt: {
-        gt: recentDate,
-      },
-    },
-    include: {
-      Files: {
-        orderBy: {
-          id: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
+      id: postID,
     },
   });
-  return messages;
+  return post;
 }

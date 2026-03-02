@@ -5,6 +5,7 @@ import {
   updateBio,
   updateFollowing,
   changeProfilePhoto,
+  updateLikingPost,
 } from "../prisma_queries/update.js";
 import { findProfileByUserID } from "../prisma_queries/find.js";
 import { matchedData } from "express-validator";
@@ -104,6 +105,16 @@ export async function editProfilePhoto(req, res, next) {
       return res.sendStatus(200);
     }
     await cloudinary.uploader.destroy(oldFile.fileName);
+    res.sendStatus(200);
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function editLikingPosts(req, res, next) {
+  try {
+    const { postID } = matchedData(req);
+    await updateLikingPost(Number(req.user.profileID), Number(postID));
     res.sendStatus(200);
   } catch (err) {
     return next(err);
