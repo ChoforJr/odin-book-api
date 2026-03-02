@@ -156,3 +156,45 @@ export async function updateLikingPost(profileID, postID) {
     return;
   });
 }
+
+export async function updateLikingComment(profileID, commentID) {
+  return await prisma.$transaction(async (tx) => {
+    const profile = await tx.profile.findUnique({
+      where: {
+        id: profileID,
+      },
+      select: {
+        likedComments: {
+          where: {
+            id: commentID,
+          },
+        },
+      },
+    });
+
+    if (profile.likedComments.length > 0) {
+      await tx.profile.update({
+        where: {
+          id: profileID,
+        },
+        data: {
+          likedComments: {
+            disconnect: { id: commentID },
+          },
+        },
+      });
+      return;
+    }
+    await tx.profile.update({
+      where: {
+        id: profileID,
+      },
+      data: {
+        likedComments: {
+          connect: { id: commentID },
+        },
+      },
+    });
+    return;
+  });
+}

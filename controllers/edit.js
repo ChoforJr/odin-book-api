@@ -6,6 +6,7 @@ import {
   updateFollowing,
   changeProfilePhoto,
   updateLikingPost,
+  updateLikingComment,
 } from "../prisma_queries/update.js";
 import { findProfileByUserID } from "../prisma_queries/find.js";
 import { matchedData } from "express-validator";
@@ -115,6 +116,16 @@ export async function editLikingPosts(req, res, next) {
   try {
     const { postID } = matchedData(req);
     await updateLikingPost(Number(req.user.profileID), Number(postID));
+    res.sendStatus(200);
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function editLikingComments(req, res, next) {
+  try {
+    const { commentID } = matchedData(req);
+    await updateLikingComment(Number(req.user.profileID), Number(commentID));
     res.sendStatus(200);
   } catch (err) {
     return next(err);

@@ -135,18 +135,31 @@ export async function findUserPosts(profileID) {
       profileId: profileID,
     },
     include: {
-      comments: true,
-      likedBy: {
-        select: {
-          id: true,
+      comments: {
+        include: {
+          _count: {
+            select: { likedBy: true },
+          },
         },
+      },
+      _count: {
+        select: { likedBy: true },
       },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  return posts;
+  return posts.map((post) => ({
+    ...post,
+    likeCount: post._count.likedBy,
+    comments: post.comments.map((comment) => ({
+      ...comment,
+      likeCount: comment._count.likedBy,
+      _count: undefined,
+    })),
+    _count: undefined,
+  }));
 }
 
 export async function findCommentedPost(profileID) {
@@ -159,18 +172,31 @@ export async function findCommentedPost(profileID) {
       },
     },
     include: {
-      comments: true,
-      likedBy: {
-        select: {
-          id: true,
+      comments: {
+        include: {
+          _count: {
+            select: { likedBy: true },
+          },
         },
+      },
+      _count: {
+        select: { likedBy: true },
       },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  return posts;
+  return posts.map((post) => ({
+    ...post,
+    likeCount: post._count.likedBy,
+    comments: post.comments.map((comment) => ({
+      ...comment,
+      likeCount: comment._count.likedBy,
+      _count: undefined,
+    })),
+    _count: undefined,
+  }));
 }
 
 export async function findLikedPost(profileID) {
@@ -183,18 +209,31 @@ export async function findLikedPost(profileID) {
       },
     },
     include: {
-      comments: true,
-      likedBy: {
-        select: {
-          id: true,
+      comments: {
+        include: {
+          _count: {
+            select: { likedBy: true },
+          },
         },
+      },
+      _count: {
+        select: { likedBy: true },
       },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  return posts;
+  return posts.map((post) => ({
+    ...post,
+    likeCount: post._count.likedBy,
+    comments: post.comments.map((comment) => ({
+      ...comment,
+      likeCount: comment._count.likedBy,
+      _count: undefined,
+    })),
+    _count: undefined,
+  }));
 }
 
 export async function findPostByID(postID) {
@@ -204,4 +243,13 @@ export async function findPostByID(postID) {
     },
   });
   return post;
+}
+
+export async function findCommentByID(commentID) {
+  const comment = await prisma.comment.findUnique({
+    where: {
+      id: commentID,
+    },
+  });
+  return comment;
 }
