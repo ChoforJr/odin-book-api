@@ -8,6 +8,7 @@ import {
   readTrendingPosts,
 } from "../controllers/read.js";
 import { editLikingPosts } from "../controllers/edit.js";
+import { removePost } from "../controllers/remove.js";
 import { checkValidationResult } from "../validations/checkValidationResult.js";
 import {
   validatePostRules,
@@ -51,5 +52,7 @@ postRouter.patch(
   checkValidationResult,
   editLikingPosts,
 );
+
+postRouter.delete("/:postID", removePost);
 
 export default postRouter;

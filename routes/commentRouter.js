@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { addNewComment } from "../controllers/add.js";
 import { editLikingComments } from "../controllers/edit.js";
+import { removeComment } from "../controllers/remove.js";
 import { readPostComments } from "../controllers/read.js";
 import { checkValidationResult } from "../validations/checkValidationResult.js";
 import {
@@ -25,5 +26,7 @@ commentRouter.patch(
 );
 
 commentRouter.get("/:postID", readPostComments);
+
+commentRouter.delete("/:commentID", removeComment);
 
 export default commentRouter;
