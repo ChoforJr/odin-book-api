@@ -4,6 +4,8 @@ import {
   readUserPosts,
   readCommentedPosts,
   readLikedPosts,
+  readIndexedPosts,
+  readTrendingPosts,
 } from "../controllers/read.js";
 import { editLikingPosts } from "../controllers/edit.js";
 import { checkValidationResult } from "../validations/checkValidationResult.js";
@@ -40,6 +42,8 @@ postRouter.get(
   checkValidationResult,
   readLikedPosts,
 );
+postRouter.get("/index", readIndexedPosts);
+postRouter.get("/trending", readTrendingPosts);
 
 postRouter.patch(
   "/like",

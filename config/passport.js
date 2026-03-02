@@ -79,7 +79,7 @@ export async function authLogin(req, res, next) {
           profileID: user.profile.id,
         };
         const token = jwt.sign({ user: body }, process.env.SECRET_KEY, {
-          expiresIn: "1h",
+          expiresIn: "3h",
         });
 
         return res.json({ token });
