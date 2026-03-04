@@ -42,6 +42,8 @@ export async function findUserByID(userId) {
     profilePhoto: user?.profile?.photo?.url || null,
     profileDisplayName: user?.profile?.displayName || null,
     profileType: user?.profile?.type || null,
+    profileBio: user?.profile?.bio || null,
+    profileID: user?.profile?.id || null,
     followingCount: user?.profile?._count?.following || 0,
     followersCount: user?.profile?._count?.followedBy || 0,
     profile: undefined,

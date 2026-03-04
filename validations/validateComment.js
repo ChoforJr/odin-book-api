@@ -6,8 +6,8 @@ export const validateCommentRules = [
     .trim()
     .notEmpty()
     .withMessage("Content is required")
-    .isLength({ min: 4 })
-    .withMessage("Content has to have a minimum of 4 characters"),
+    .isLength({ min: 4, max: 800 })
+    .withMessage("Content has to have a length of between 4 and 800"),
 ];
 
 export const validateCommentIDRules = [

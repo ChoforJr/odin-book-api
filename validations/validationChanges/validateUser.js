@@ -7,8 +7,8 @@ export const validateUsernameRules = [
     .trim()
     .isEmail()
     .withMessage("Email: Should be an email")
-    .isLength({ min: 8, max: 32 })
-    .withMessage("Email: Has to have a length of between 8 and 32")
+    .isLength({ min: 8, max: 64 })
+    .withMessage("Email: Has to have a length of between 8 and 64")
     .custom(async (value) => {
       const user = await findUserByUsername(value);
       if (!user) {
@@ -23,8 +23,8 @@ export const validatePasswordRules = [
     .trim()
     .notEmpty()
     .withMessage("currentPassword is required")
-    .isLength({ min: 4, max: 32 })
-    .withMessage("currentPassword: Has to have a length of between 4 and 32")
+    .isLength({ min: 4, max: 64 })
+    .withMessage("currentPassword: Has to have a length of between 4 and 64")
     .custom(async (value, { req }) => {
       const user = await findUserByUsername(req.user.username);
       if (!user) {
@@ -39,15 +39,15 @@ export const validatePasswordRules = [
     .trim()
     .notEmpty()
     .withMessage("newPassword is required")
-    .isLength({ min: 4, max: 32 })
-    .withMessage("newPassword: Has to have a length of between 4 and 32"),
+    .isLength({ min: 4, max: 64 })
+    .withMessage("newPassword: Has to have a length of between 4 and 64"),
   body("confirmNewPassword")
     .trim()
     .notEmpty()
     .withMessage("Confirm New Password is required")
-    .isLength({ min: 4, max: 32 })
+    .isLength({ min: 4, max: 64 })
     .withMessage(
-      "Confirm New Password: Has to have a length of between 4 and 32",
+      "Confirm New Password: Has to have a length of between 4 and 64",
     )
     .custom(async (value, { req }) => {
       if (value !== req.body.newPassword) {
@@ -62,13 +62,13 @@ export const validateDisplayNameRules = [
     .trim()
     .matches(/^[A-Za-z0-9\s_]+$/)
     .withMessage("Display Name: must contain only letters")
-    .isLength({ min: 4, max: 32 })
-    .withMessage("Display Name: Has to have a length of between 4 and 32"),
+    .isLength({ min: 4, max: 64 })
+    .withMessage("Display Name: Has to have a length of between 4 and 64"),
 ];
 
 export const validateBioRules = [
   body("newBio")
     .trim()
-    .isLength({ min: 4, max: 64 })
-    .withMessage("Bio: Has to have a length of between 4 and 64"),
+    .isLength({ min: 4, max: 250 })
+    .withMessage("Bio: Has to have a length of between 4 and 250"),
 ];
