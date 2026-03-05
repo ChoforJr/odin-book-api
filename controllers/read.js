@@ -12,7 +12,6 @@ import {
   findTrendingPosts,
   findPostComments,
 } from "../prisma_queries/find.js";
-import { matchedData } from "express-validator";
 
 export async function readUserByID(req, res, next) {
   try {
@@ -80,8 +79,7 @@ export async function readProfiles(req, res, next) {
 
 export async function readUserPosts(req, res, next) {
   try {
-    const { profileID } = matchedData(req);
-    const posts = await findUserPosts(Number(profileID));
+    const posts = await findUserPosts(req.user.profileID);
     res.json(posts);
   } catch (err) {
     return next(err);
@@ -90,8 +88,7 @@ export async function readUserPosts(req, res, next) {
 
 export async function readCommentedPosts(req, res, next) {
   try {
-    const { profileID } = matchedData(req);
-    const posts = await findCommentedPost(Number(profileID));
+    const posts = await findCommentedPost(req.user.profileID);
     res.json(posts);
   } catch (err) {
     return next(err);
@@ -100,8 +97,7 @@ export async function readCommentedPosts(req, res, next) {
 
 export async function readLikedPosts(req, res, next) {
   try {
-    const { profileID } = matchedData(req);
-    const posts = await findLikedPost(Number(profileID));
+    const posts = await findLikedPost(req.user.profileID);
     res.json(posts);
   } catch (err) {
     return next(err);

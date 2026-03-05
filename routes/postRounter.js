@@ -12,7 +12,6 @@ import { removePost } from "../controllers/remove.js";
 import { checkValidationResult } from "../validations/checkValidationResult.js";
 import {
   validatePostRules,
-  validateProfileIDRules,
   validatePostIDRules,
 } from "../validations/validatePost.js";
 
@@ -25,24 +24,9 @@ postRouter.post(
   addNewPost,
 );
 
-postRouter.get(
-  "/mine",
-  validateProfileIDRules,
-  checkValidationResult,
-  readUserPosts,
-);
-postRouter.get(
-  "/commented",
-  validateProfileIDRules,
-  checkValidationResult,
-  readCommentedPosts,
-);
-postRouter.get(
-  "/liked",
-  validateProfileIDRules,
-  checkValidationResult,
-  readLikedPosts,
-);
+postRouter.get("/mine", readUserPosts);
+postRouter.get("/commented", readCommentedPosts);
+postRouter.get("/liked", readLikedPosts);
 postRouter.get("/index", readIndexedPosts);
 postRouter.get("/trending", readTrendingPosts);
 
