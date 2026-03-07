@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && npx tsc",
+    "build": "npx prisma generate && npx tsc && npx prisma db seed",
     "start": "node app.js",
     "dev": "node --watch app.js",
     "prismaGen": "npx prisma generate",
