@@ -21,3 +21,7 @@ Copy the output and assign it to a secret key of your choice in your .env file
 npm install multer-storage-cloudinary --legacy-peer-deps
 
 npm audit fix --legacy-peer-deps
+
+# Command for Running Seeds.js function
+
+npx prisma db seed

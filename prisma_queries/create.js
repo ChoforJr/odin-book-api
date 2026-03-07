@@ -16,21 +16,6 @@ export async function createGuest(username, password, displayName, bio) {
   });
 }
 
-export async function createOtherUser(username, password, displayName, bio) {
-  await prisma.user.create({
-    data: {
-      username: username,
-      password: password,
-      profile: {
-        create: {
-          displayName: displayName,
-          bio: bio,
-        },
-      },
-    },
-  });
-}
-
 export async function createUser(username, password, displayName) {
   await prisma.user.create({
     data: {
