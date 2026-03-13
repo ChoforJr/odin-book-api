@@ -1,27 +1,119 @@
-# ODIN-BOOK API
+# Odin-Book API
 
-This the backend of the Odin-Book app project, This project is a social media app
+This is the backend API for the Odin-Book social media application. Odin-Book is a full-stack social media platform where users can create profiles, post content, comment on posts, and interact with other users.
 
-## ODIN-BOOKP CLIENT GITHUB REPO
+## Features
 
-https://github.com/ChoforJr/odin-book
+- User authentication and authorization (JWT-based)
+- User profiles with bio, display name, and profile photos
+- Create, read, update, and delete posts
+- Comment on posts
+- Like posts and comments
+- File uploads (images) via Cloudinary
+- Follow/unfollow users
+- Guest accounts for demo purposes
+- Database seeding with fake data
 
-# Author : FORSAKANG CHOFOR JUNIOR
+## Tech Stack
 
-# Run the command below in your terminal to genrate a key for secret key
+- **Backend Framework**: Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Passport.js with JWT and local strategies
+- **File Storage**: Cloudinary
+- **Validation**: Express-validator
+- **Password Hashing**: bcryptjs
+- **CORS**: Configured for specific origins
+- **Language**: JavaScript (ES Modules)
+- **TypeScript**: Used for type definitions
 
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+## Prerequisites
 
-Copy the output and assign it to a secret key of your choice in your .env file
+- Node.js (version 16 or higher)
+- PostgreSQL database
+- npm
 
-# There will be a conflict with multer-storage-cloudinary package you may need the below
+## Installation
 
-# command to bypass that error
+1. Clone the repository:
 
+   ```bash
+   git clone https://github.com/ChoforJr/odin-book-api.git
+   cd odin-book-api
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory with the following variables:
+
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/odin_book_db"
+   JWT_SECRET=your_jwt_secret_here
+   CLOUDINARY_URL=cloudinary://cloud_name:api_key:api_secret@
+
+   ```
+
+   To generate a secure JWT secret:
+
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+
+4. Set up the database:
+
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
+
+5. (Optional) Seed the database with fake data:
+   ```bash
+   npx prisma db seed
+   ```
+
+## Usage
+
+### Development
+
+Start the development server with auto-reload:
+
+```bash
+npm run dev
+```
+
+### Production
+
+Build and start the application:
+
+```bash
+npm run build
+npm start
+```
+
+The server will start on the port specified in your environment or default to 3001.
+
+## Troubleshooting
+
+### Multer-Storage-Cloudinary Conflict
+
+If you encounter peer dependency issues with `multer-storage-cloudinary`, install with legacy peer deps:
+
+```bash
 npm install multer-storage-cloudinary --legacy-peer-deps
-
 npm audit fix --legacy-peer-deps
+```
 
-# Command for Running Seeds.js function
+## Author
 
-npx prisma db seed
+**Forsakang Chofor Junior**
+
+- [GitHub](https://github.com/ChoforJr)
+- [LinkedIn](https://www.linkedin.com/in/choforforsakang/)
+
+## Related Projects
+
+- [Odin-Book Client](https://github.com/ChoforJr/odin-book) - Frontend React application
