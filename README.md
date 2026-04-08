@@ -24,7 +24,6 @@ This is the backend API for the Odin-Book social media application. Odin-Book is
 - **Password Hashing**: bcryptjs
 - **CORS**: Configured for specific origins
 - **Language**: JavaScript (ES Modules)
-- **TypeScript**: Used for type definitions
 
 ## Prerequisites
 
@@ -106,6 +105,14 @@ If you encounter peer dependency issues with `multer-storage-cloudinary`, instal
 npm install multer-storage-cloudinary --legacy-peer-deps
 npm audit fix --legacy-peer-deps
 ```
+
+## Roadmap / Future Enhancements
+
+- **WebSocket Integration**: "Transitioning from RESTful polling to bidirectional communication using Socket.io for instant post, comment, and likes delivery with real-time live notifications."
+
+- **Real-time Presence**: "Implementing user 'Online/Offline' status indicators via socket connection tracking."
+
+- **Add Typescript**: "This allows me to define the "shape" of incoming and outgoing data, helping catch errors during development rather than at runtime when users encounter them"
 
 ## Author
 
