@@ -2,6 +2,10 @@
 
 This is the backend API for the Odin-Book social media application. Odin-Book is a full-stack social media platform where users can create profiles, post content, comment on posts, and interact with other users.
 
+## Related Projects
+
+- [Odin-Book Client](https://github.com/ChoforJr/odin-book) - Frontend React application
+
 ## Features
 
 - User authentication and authorization (JWT-based)
@@ -120,7 +124,3 @@ npm audit fix --legacy-peer-deps
 
 - [GitHub](https://github.com/ChoforJr)
 - [LinkedIn](https://www.linkedin.com/in/choforforsakang/)
-
-## Related Projects
-
-- [Odin-Book Client](https://github.com/ChoforJr/odin-book) - Frontend React application
